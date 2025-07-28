@@ -1,6 +1,5 @@
 import PageMeta from "../components/common/PageMeta";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
-import ComponentCard from "../components/common/ComponentCard";
 import { Icon } from "../components/common/Icon";
 
 // Placeholder data, to be replaced with Firebase integration in the future
