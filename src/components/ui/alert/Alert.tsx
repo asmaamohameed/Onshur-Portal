@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-import { Icon } from "../../common/Icon";
 
 interface AlertProps {
   variant: "success" | "error" | "warning" | "info"; // Alert type

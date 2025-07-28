@@ -34,9 +34,6 @@ export default function Badges() {
             <Badge variant="light" color="light">
               Light
             </Badge>
-            <Badge variant="light" color="dark">
-              Dark
-            </Badge>
           </div>
         </ComponentCard>
         <ComponentCard title="With Solid Background">
@@ -60,9 +57,6 @@ export default function Badges() {
             <Badge variant="solid" color="light">
               Light
             </Badge>
-            <Badge variant="solid" color="dark">
-              Dark
-            </Badge>
           </div>
         </ComponentCard>
         <ComponentCard title="Light Background with Left Icon">
@@ -84,9 +78,6 @@ export default function Badges() {
             </Badge>
             <Badge variant="light" color="light" startIcon={<Icon name="Plus" />}>
               Light
-            </Badge>
-            <Badge variant="light" color="dark" startIcon={<Icon name="Plus" />}>
-              Dark
             </Badge>
           </div>
         </ComponentCard>
@@ -110,9 +101,6 @@ export default function Badges() {
             <Badge variant="solid" color="light" startIcon={<Icon name="Plus" />}>
               Light
             </Badge>
-            <Badge variant="solid" color="dark" startIcon={<Icon name="Plus" />}>
-              Dark
-            </Badge>
           </div>
         </ComponentCard>
         <ComponentCard title="Light Background with Right Icon">
@@ -135,9 +123,6 @@ export default function Badges() {
             <Badge variant="light" color="light" endIcon={<Icon name="Plus" />}>
               Light
             </Badge>
-            <Badge variant="light" color="dark" endIcon={<Icon name="Plus" />}>
-              Dark
-            </Badge>
           </div>
         </ComponentCard>
         <ComponentCard title="Solid Background with Right Icon">
@@ -159,9 +144,6 @@ export default function Badges() {
             </Badge>
             <Badge variant="solid" color="light" endIcon={<Icon name="Plus" />}>
               Light
-            </Badge>
-            <Badge variant="solid" color="dark" endIcon={<Icon name="Plus" />}>
-              Dark
             </Badge>
           </div>
         </ComponentCard>
