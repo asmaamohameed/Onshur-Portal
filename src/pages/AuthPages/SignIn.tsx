@@ -9,8 +9,8 @@ export default function SignIn() {
   return (
     <>
       <PageMeta
-        title={t('signInTitle')}
-        description={t('signInDescription')}
+        title="Sign In | Onshur Portal"
+        description="Sign in to your Onshur Portal account to access support programs and manage applications"
       />
       <AuthLayout>
         <SignInForm />

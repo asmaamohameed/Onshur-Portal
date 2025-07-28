@@ -9,8 +9,8 @@ export default function SignUp() {
   return (
     <>
       <PageMeta
-        title={t('signUpTitle')}
-        description={t('signUpDescription')}
+        title="Sign Up | Onshur Portal"
+        description="Create your Onshur Portal account to apply for support programs and access publishing resources"
       />
       <AuthLayout>
         <SignUpForm />

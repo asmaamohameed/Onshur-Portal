@@ -9,8 +9,8 @@ export default function ResetPassword() {
   return (
     <>
       <PageMeta
-        title={t('resetPasswordTitle')}
-        description={t('resetPasswordDescription')}
+        title="Reset Password | Onshur Portal"
+        description="Set a new password for your Onshur Portal account - Secure password reset process"
       />
       <AuthLayout>
         <ResetPassForm />

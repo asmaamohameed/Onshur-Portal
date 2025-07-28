@@ -9,8 +9,8 @@ export default function ForgetPassword() {
   return (
     <>
       <PageMeta
-        title={t('forgotPasswordTitle')}
-        description={t('forgotPasswordDescription')}
+        title="Forgot Password | Onshur Portal"
+        description="Reset your Onshur Portal account password - Secure password recovery for your account"
       />
       <AuthLayout>
         <ForgetPassForm />

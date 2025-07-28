@@ -9,8 +9,8 @@ export default function EmailVerification() {
   return (
     <>
       <PageMeta
-        title={t('emailVerificationTitle')}
-        description={t('emailVerificationDescription')}
+        title="Email Verification | Onshur Portal"
+        description="Verify your email address for Onshur Portal account activation and security"
       />
       <AuthLayout>
         <EmailVerificationForm />
