@@ -3,16 +3,14 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
-import { useAuth } from '../../context/AuthContext';
 
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const { user } = useAuth();
   // These fields are not standard in Firebase User, so use placeholders or extend user profile in Firestore for real data
-  const country = user?.reloadUserInfo?.country || 'N/A';
-  const cityState = user?.reloadUserInfo?.cityState || 'N/A';
-  const postalCode = user?.reloadUserInfo?.postalCode || 'N/A';
-  const taxId = user?.reloadUserInfo?.taxId || 'N/A';
+  const country =  'N/A';
+  const cityState =  'N/A';
+  const postalCode =  'N/A';
+  const taxId = 'N/A';
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");

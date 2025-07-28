@@ -62,22 +62,6 @@ export default function SignUpForm() {
     return Object.values(passwordValidation).every(validation => validation);
   };
 
-  // Get password strength percentage
-  const getPasswordStrength = (): number => {
-    const validCount = Object.values(passwordValidation).filter(Boolean).length;
-    return (validCount / 5) * 100;
-  };
-
-  // Get password strength color
-  const getPasswordStrengthColor = (): string => {
-    const strength = getPasswordStrength();
-    if (strength <= 20) return 'bg-red-500';
-    if (strength <= 40) return 'bg-orange-500';
-    if (strength <= 60) return 'bg-yellow-500';
-    if (strength <= 80) return 'bg-blue-500';
-    return 'bg-green-500';
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
