@@ -43,37 +43,34 @@ const AppHeader: React.FC = () => {
   return (
     <header className="sticky top-0 flex w-full bg-white border-gray-200 z-99999 lg:border-b">
       <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
-        <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
+        <div className="flex items-center justify-between bg-brand-500 w-full gap-2 px-3 py-3 border-b border-gray-200 sm:gap-4 lg:hidden">
           {/* Mobile Sidebar Toggle Button */}
           <button
-            className="items-center justify-center w-10 h-10 text-gray-500 border-gray-200 rounded-lg z-99999 flex lg:hidden"
+            className="items-center justify-center w-10 h-10 text-white border-white rounded-lg z-99999 flex lg:hidden"
             onClick={handleToggle}
             aria-label="Toggle Sidebar"
           >
             {isMobileOpen ? (
-              <Icon name="menu-open" />
+              <Icon set="md" name="MdClose" size={40} />
             ) : (
-              <Icon name="menu-close" />
+              <Icon set="md" name="MdMenu" size={40}/>
             )}
-            {/* Cross Icon */}
           </button>
 
           <Link to="/" className="lg:hidden">
             <img
               className=""
-              src="./images/logo/logo.svg"
+              src="./images/logo/auth-logo.svg"
               alt="Logo"
             />
           </Link>
 
           <button
             onClick={toggleApplicationMenu}
-            className="flex items-center justify-center w-10 h-10 text-gray-700 rounded-lg z-99999 hover:bg-gray-100 lg:hidden"
+            className="flex items-center justify-center w-10 h-10 text-white rounded-lg z-99999 hover:bg-white lg:hidden"
           >
-            <Icon name="application-menu" />
+            <Icon set="md" name="MdMoreHoriz" size={40} />
           </button>
-
-          {/* Removed desktop search bar and desktop sidebar toggle for best practice */}
         </div>
         <div
           className={`${

@@ -53,7 +53,7 @@ const navItems: NavItem[] = [
 ];
 
 const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isExpanded, isMobileOpen, isHovered, setIsHovered, toggleMobileSidebar } = useSidebar();
   const location = useLocation();
   const { signOut, loading } = useAuth();
 
@@ -121,6 +121,12 @@ const AppSidebar: React.FC = () => {
     });
   };
 
+  const handleNavigationClick = () => {
+    if (isMobileOpen) {
+      toggleMobileSidebar();
+    }
+  };
+
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
       {items.map((nav, index) => (
@@ -180,6 +186,7 @@ const AppSidebar: React.FC = () => {
                 className={`menu-item group ${
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                 }`}
+                onClick={handleNavigationClick}
               >
                 <span
                   className={`menu-item-icon-size ${
@@ -219,6 +226,7 @@ const AppSidebar: React.FC = () => {
                           ? "menu-dropdown-item-active"
                           : "menu-dropdown-item-inactive"
                       }`}
+                      onClick={handleNavigationClick}
                     >
                       {subItem.name}
                       <span className="flex items-center gap-1 ml-auto">
@@ -258,7 +266,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-[#5951A2] text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed top-32 lg:top-0 flex flex-col lg:mt-0 px-4 left-0 bg-[#5951A2] text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -276,8 +284,8 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/">
-          {isExpanded || isHovered || isMobileOpen ? (
+        <Link to="/" onClick={handleNavigationClick}>
+          {isExpanded || isHovered ? (
             <>
               <img
                 className="border-y-1 border-white py-3"
@@ -286,12 +294,7 @@ const AppSidebar: React.FC = () => {
               />
             </>
           ) : (
-            <img
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              // width={32}
-              // height={32}
-            />
+          <span className="text-white text-2xl font-bold">menu</span>
           )}
         </Link>
       </div>
