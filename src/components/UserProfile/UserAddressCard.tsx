@@ -3,9 +3,16 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import { useAuth } from '../../context/AuthContext';
 
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const { user } = useAuth();
+  // These fields are not standard in Firebase User, so use placeholders or extend user profile in Firestore for real data
+  const country = user?.reloadUserInfo?.country || 'N/A';
+  const cityState = user?.reloadUserInfo?.cityState || 'N/A';
+  const postalCode = user?.reloadUserInfo?.postalCode || 'N/A';
+  const taxId = user?.reloadUserInfo?.taxId || 'N/A';
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
@@ -26,7 +33,7 @@ export default function UserAddressCard() {
                   Country
                 </p>
                 <p className="text-sm font-medium text-gray-800">
-                  United States.
+                  {country}
                 </p>
               </div>
 
@@ -35,7 +42,7 @@ export default function UserAddressCard() {
                   City/State
                 </p>
                 <p className="text-sm font-medium text-gray-800">
-                  Phoenix, Arizona, United States.
+                  {cityState}
                 </p>
               </div>
 
@@ -44,7 +51,7 @@ export default function UserAddressCard() {
                   Postal Code
                 </p>
                 <p className="text-sm font-medium text-gray-800">
-                  ERT 2489
+                  {postalCode}
                 </p>
               </div>
 
@@ -53,7 +60,7 @@ export default function UserAddressCard() {
                   TAX ID
                 </p>
                 <p className="text-sm font-medium text-gray-800">
-                  AS4568384
+                  {taxId}
                 </p>
               </div>
             </div>

@@ -10,25 +10,89 @@ import { FaGoogle, FaXTwitter, FaMicrosoft } from "react-icons/fa6";
 import { useAuth } from '../../context/AuthContext';
 import Alert from '../ui/alert/Alert';
 
+// Password validation interface
+interface PasswordValidation {
+  length: boolean;
+  uppercase: boolean;
+  lowercase: boolean;
+  number: boolean;
+  special: boolean;
+}
+
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordValidation, setPasswordValidation] = useState<PasswordValidation>({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    special: false,
+  });
   const { t } = useTranslation();
   const { direction } = useLanguage();
   const isRTL = direction === 'rtl';
-  const { signUp, loading, error } = useAuth();
+  const { signUp, loading, error, signInWithGoogle, signInWithX, signInWithMicrosoft } = useAuth();
+  const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
+
+  // Password validation function
+  const validatePassword = (password: string): PasswordValidation => {
+    return {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+    };
+  };
+
+  // Handle password change
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setPasswordValidation(validatePassword(newPassword));
+  };
+
+  // Check if password is strong enough
+  const isPasswordStrong = (): boolean => {
+    return Object.values(passwordValidation).every(validation => validation);
+  };
+
+  // Get password strength percentage
+  const getPasswordStrength = (): number => {
+    const validCount = Object.values(passwordValidation).filter(Boolean).length;
+    return (validCount / 5) * 100;
+  };
+
+  // Get password strength color
+  const getPasswordStrengthColor = (): string => {
+    const strength = getPasswordStrength();
+    if (strength <= 20) return 'bg-red-500';
+    if (strength <= 40) return 'bg-orange-500';
+    if (strength <= 60) return 'bg-yellow-500';
+    if (strength <= 80) return 'bg-blue-500';
+    return 'bg-green-500';
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
+    
+    // Validate password strength
+    if (!isPasswordStrong()) {
+      setLocalError(t('passwordRequirementsNotMet') || 'Password does not meet security requirements');
+      return;
+    }
+    
     if (password !== confirmPassword) {
       setLocalError(t('passwordMismatch'));
       return;
     }
+    
     await signUp(email, password);
   };
 
@@ -80,7 +144,7 @@ export default function SignUpForm() {
                       className={isRTL ? 'text-left' : 'text-left'}
                       dir={isRTL ? 'rtl' : 'ltr'}
                       value={password}
-                      onChange={e => setPassword(e.target.value)}
+                      onChange={handlePasswordChange}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -92,6 +156,13 @@ export default function SignUpForm() {
                         className="fill-gray-500 dark:fill-gray-400 size-5"
                       />
                     </span>
+                  </div>
+                  
+                  {/* Password requirements info */}
+                  <div className="mt-2">
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      {t('passwordInfo') || 'Password must be at least 8 characters with uppercase, lowercase, numbers, and special characters.'}
+                    </p>
                   </div>
                 </div>
                 {/* <!-- confirm password--> */}
@@ -119,10 +190,17 @@ export default function SignUpForm() {
                       />
                     </span>
                   </div>
+                  
+
                 </div>
                 {/* <!-- Button --> */}
                 <div>
-                  <Button className="w-full" size="sm" type="submit" disabled={loading}>
+                  <Button 
+                    className="w-full" 
+                    size="sm" 
+                    type="submit" 
+                    disabled={loading || !isPasswordStrong()}
+                  >
                     {loading ? t('loading') : t('registerButton')}
                   </Button>
                 </div>
@@ -151,14 +229,56 @@ export default function SignUpForm() {
             </div>
             {/* Social sign up buttons */}
             <div className="flex justify-center items-center gap-x-5">
-              <button className="w-12 h-12 flex items-center justify-center transition hover:scale-120">
-                <FaGoogle size={28} className="text-[#5B4FC9]" />
+              <button
+                className="w-12 h-12 flex items-center justify-center transition hover:scale-120"
+                onClick={async () => {
+                  if (socialLoading) return;
+                  setSocialLoading('google');
+                  await signInWithGoogle();
+                  setSocialLoading(null);
+                }}
+                disabled={!!socialLoading}
+                aria-label="Sign up with Google"
+              >
+                {socialLoading === 'google' ? (
+                  <Icon set="fa" name="FaSpinner" className="animate-spin text-[#5B4FC9] size-7" />
+                ) : (
+                  <FaGoogle size={28} className="text-[#5B4FC9]" />
+                )}
               </button>
-              <button className="w-12 h-12 flex items-center justify-center transition hover:scale-120">
-                <FaXTwitter size={28} className="text-[#5B4FC9]" />
+              <button
+                className="w-12 h-12 flex items-center justify-center transition hover:scale-120"
+                onClick={async () => {
+                  if (socialLoading) return;
+                  setSocialLoading('x');
+                  await signInWithX();
+                  setSocialLoading(null);
+                }}
+                disabled={!!socialLoading}
+                aria-label="Sign up with X"
+              >
+                {socialLoading === 'x' ? (
+                  <Icon set="fa" name="FaSpinner" className="animate-spin text-[#5B4FC9] size-7" />
+                ) : (
+                  <FaXTwitter size={28} className="text-[#5B4FC9]" />
+                )}
               </button>
-              <button className="w-12 h-12 flex items-center justify-center transition hover:scale-120">
-                <FaMicrosoft size={28} className="text-[#5B4FC9]" />
+              <button
+                className="w-12 h-12 flex items-center justify-center transition hover:scale-120"
+                onClick={async () => {
+                  if (socialLoading) return;
+                  setSocialLoading('microsoft');
+                  await signInWithMicrosoft();
+                  setSocialLoading(null);
+                }}
+                disabled={!!socialLoading}
+                aria-label="Sign up with Microsoft"
+              >
+                {socialLoading === 'microsoft' ? (
+                  <Icon set="fa" name="FaSpinner" className="animate-spin text-[#5B4FC9] size-7" />
+                ) : (
+                  <FaMicrosoft size={28} className="text-[#5B4FC9]" />
+                )}
               </button>
             </div>
           </div>

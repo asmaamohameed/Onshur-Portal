@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router";
 // Assume these icons are imported from an icon library
 import { Icon } from "../components/common/Icon";
 import { useSidebar } from "../context/SidebarContext";
+import { useAuth } from '../context/AuthContext';
 
 type NavItem = {
   name: string;
@@ -54,6 +55,7 @@ const navItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
+  const { signOut, loading } = useAuth();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -155,6 +157,20 @@ const AppSidebar: React.FC = () => {
                       ? "rotate-180 text-brand-500"
                       : ""
                   }`} />
+              )}
+            </button>
+          ) : nav.name === "Log Out " ? (
+            <button
+              className={`menu-item group menu-item-inactive`}
+              onClick={signOut}
+              disabled={loading}
+              style={{ width: '100%', textAlign: 'left' }}
+            >
+              <span className="menu-item-icon-size menu-item-icon-inactive">
+                {nav.icon}
+              </span>
+              {(isExpanded || isHovered || isMobileOpen) && (
+                <span className="menu-item-text">{nav.name}</span>
               )}
             </button>
           ) : (
@@ -264,8 +280,8 @@ const AppSidebar: React.FC = () => {
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
-                className=""
-                src="/images/logo/logo.svg"
+                className="border-y-1 border-white py-3"
+                src="/images/logo/auth-logo.svg"
                 alt="Logo"
               />
             </>

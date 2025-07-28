@@ -3,9 +3,14 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import { useAuth } from '../../context/AuthContext';
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const { user } = useAuth();
+  const displayName = user?.displayName || 'User';
+  const email = user?.email || 'No email';
+  const phone = user?.phoneNumber || 'No phone';
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
@@ -22,19 +27,10 @@ export default function UserInfoCard() {
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500">
-                First Name
+                Name
               </p>
               <p className="text-sm font-medium text-gray-800">
-                Musharof
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">
-                Last Name
-              </p>
-              <p className="text-sm font-medium text-gray-800">
-                Chowdhury
+                {displayName}
               </p>
             </div>
 
@@ -43,7 +39,7 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800">
-                randomuser@pimjo.com
+                {email}
               </p>
             </div>
 
@@ -52,16 +48,7 @@ export default function UserInfoCard() {
                 Phone
               </p>
               <p className="text-sm font-medium text-gray-800">
-                +09 363 398 46
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">
-                Bio
-              </p>
-              <p className="text-sm font-medium text-gray-800">
-                Team Manager
+                {phone}
               </p>
             </div>
           </div>
@@ -109,10 +96,10 @@ export default function UserInfoCard() {
 
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div>
-                    <Label>Facebook</Label>
+                    <Label>X (Twitter)</Label>
                     <Input
                       type="text"
-                      value="https://www.facebook.com/PimjoHQ"
+                      value="https://twitter.com/PimjoHQ"
                     />
                   </div>
 

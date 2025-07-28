@@ -75,6 +75,7 @@ const resources = {
       minPassword: 'Password must be at least 6 characters',
       passwordMismatch: 'Passwords do not match',
       invalidCode: 'Invalid verification code',
+      passwordInfo: 'Password must be at least 8 characters with uppercase, lowercase, numbers, and special characters.',
       
       // Status Messages
       error: 'Error',
@@ -174,6 +175,7 @@ const resources = {
       minPassword: 'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
       passwordMismatch: 'كلمات المرور غير متطابقة',
       invalidCode: 'رمز التحقق غير صالح',
+      passwordInfo: 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل مع أحرف كبيرة وصغيرة وأرقام ورموز خاصة.',
       
       // Status Messages
       error: 'خطأ',

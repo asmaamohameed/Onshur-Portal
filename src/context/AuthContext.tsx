@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User } from 'firebase/auth';
 import { useNavigate, useLocation } from 'react-router';
-import { firebaseAuthService } from '../services/firebaseAuthService';
+import { firebaseAuthService, signInWithGoogle, signInWithX, signInWithMicrosoft } from '../services/firebaseAuthService';
 
 interface AuthContextType {
   user: User | null;
@@ -11,6 +11,9 @@ interface AuthContextType {
   signIn: (email: string, password: string, remember: boolean) => Promise<void>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  signInWithX: () => Promise<void>;
+  signInWithMicrosoft: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -86,8 +89,50 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signInWithGoogleHandler = async () => {
+    setLoading(true);
+    setError(null);
+    const res = await signInWithGoogle();
+    setLoading(false);
+    if (res.error) {
+      setError(res.error);
+    } else {
+      setUser(res.user);
+      const from = (location.state as any)?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    }
+  };
+
+  const signInWithXHandler = async () => {
+    setLoading(true);
+    setError(null);
+    const res = await signInWithX();
+    setLoading(false);
+    if (res.error) {
+      setError(res.error);
+    } else {
+      setUser(res.user);
+      const from = (location.state as any)?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    }
+  };
+
+  const signInWithMicrosoftHandler = async () => {
+    setLoading(true);
+    setError(null);
+    const res = await signInWithMicrosoft();
+    setLoading(false);
+    if (res.error) {
+      setError(res.error);
+    } else {
+      setUser(res.user);
+      const from = (location.state as any)?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, error, signUp, signIn, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ user, loading, error, signUp, signIn, signOut, resetPassword, signInWithGoogle: signInWithGoogleHandler, signInWithX: signInWithXHandler, signInWithMicrosoft: signInWithMicrosoftHandler }}>
       {children}
     </AuthContext.Provider>
   );

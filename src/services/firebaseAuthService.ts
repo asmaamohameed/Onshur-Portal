@@ -10,7 +10,13 @@ import {
   browserLocalPersistence,
   browserSessionPersistence,
   AuthError,
+  GoogleAuthProvider,
+  OAuthProvider,
+  signInWithPopup,
+  TwitterAuthProvider,
 } from 'firebase/auth';
+import { db } from '../firebase';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import i18n from '../i18n';
 
 export interface AuthResponse {
@@ -69,6 +75,83 @@ function getErrorMessage(error: AuthError): string {
     return (messages as { [key: string]: string })[lang] || messages.en;
   }
   return lang === 'ar' ? 'حدث خطأ غير متوقع.' : 'An unexpected error occurred.';
+}
+
+const socialErrorMessages: Record<string, { en: string; ar: string }> = {
+  'auth/popup-closed-by-user': {
+    en: 'Authentication popup was closed before completing sign in.',
+    ar: 'تم إغلاق نافذة تسجيل الدخول قبل إكمال العملية.'
+  },
+  'auth/popup-blocked': {
+    en: 'Popup was blocked by the browser.',
+    ar: 'تم حظر النافذة المنبثقة بواسطة المتصفح.'
+  },
+  'auth/account-exists-with-different-credential': {
+    en: 'An account already exists with the same email but different sign-in credentials.',
+    ar: 'يوجد حساب بنفس البريد الإلكتروني ولكن بمزود تسجيل دخول مختلف.'
+  },
+  // Add more as needed
+};
+
+function getSocialErrorMessage(error: AuthError): string {
+  const lang = i18n.language || 'en';
+  const code = error.code;
+  const messages = socialErrorMessages[code];
+  if (messages) {
+    return (messages as { [key: string]: string })[lang] || messages.en;
+  }
+  return getErrorMessage(error);
+}
+
+async function createUserProfile(user: User, provider: string) {
+  if (!user.email) return;
+  const userRef = doc(db, 'users', user.uid);
+  const userSnap = await getDoc(userRef);
+  if (!userSnap.exists()) {
+    await setDoc(userRef, {
+      uid: user.uid,
+      email: user.email,
+      name: user.displayName || '',
+      photoURL: user.photoURL || '',
+      provider,
+      role: 'user',
+      preferences: {},
+      createdAt: new Date().toISOString(),
+    });
+  }
+}
+
+export async function signInWithGoogle(): Promise<AuthResponse> {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    await createUserProfile(result.user, 'google');
+    return { user: result.user, error: null };
+  } catch (error: any) {
+    return { user: null, error: getSocialErrorMessage(error) };
+  }
+}
+
+export async function signInWithX(): Promise<AuthResponse> {
+  const provider = new TwitterAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    await createUserProfile(result.user, 'x');
+    return { user: result.user, error: null };
+  } catch (error: any) {
+    return { user: null, error: getSocialErrorMessage(error) };
+  }
+}
+
+export async function signInWithMicrosoft(): Promise<AuthResponse> {
+  const provider = new OAuthProvider('microsoft.com');
+  try {
+    const result = await signInWithPopup(auth, provider);
+    await createUserProfile(result.user, 'microsoft');
+    return { user: result.user, error: null };
+  } catch (error: any) {
+    return { user: null, error: getSocialErrorMessage(error) };
+  }
 }
 
 export const firebaseAuthService: AuthService = {

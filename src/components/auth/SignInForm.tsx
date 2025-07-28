@@ -14,15 +14,15 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(false);
   const { t } = useTranslation();
   const { direction } = useLanguage();
   const isRTL = direction === 'rtl';
-  const { signIn, loading, error } = useAuth();
+  const { signIn, loading, error, signInWithGoogle, signInWithX, signInWithMicrosoft } = useAuth();
+  const [socialLoading, setSocialLoading] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signIn(email, password, remember);
+    await signIn(email, password, false);
   };
 
   return (
@@ -65,36 +65,25 @@ export default function SignInForm() {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder={t('enterPassword')}
-                      className={isRTL ? 'text-right' : 'text-left'}
+                      className='text-left pr-12'
                       dir={isRTL ? 'rtl' : 'ltr'}
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                     />
-                    <span
+                    <button
+                      type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className='absolute z-30 -translate-y-1/2 cursor-pointer top-1/2 right-4'
+                      className='absolute z-30 -translate-y-1/2 top-1/2 right-4 text-gray-500 hover:text-gray-700 focus:outline-none'
                     >
                       {showPassword ? (
-                        <Icon name="eye" className="fill-gray-500 size-5" />
+                        <Icon name="FaEye" className="size-5" />
                       ) : (
-                        <Icon name="eye-close" className="fill-gray-500 size-5" />
+                        <Icon name="FaEyeSlash" className="size-5" />
                       )}
-                    </span>
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <input
-                      id="remember"
-                      type="checkbox"
-                      checked={remember}
-                      onChange={e => setRemember(e.target.checked)}
-                      className="mr-2"
-                    />
-                    <label htmlFor="remember" className="text-sm text-gray-600 dark:text-gray-400">
-                      {t('rememberMe') || 'Remember me'}
-                    </label>
-                  </div>
+                <div className="flex items-center justify-end">
                   <Link
                     to="/forget-password"
                     className="text-sm text-brand-500 hover:text-brand-600"
@@ -133,14 +122,56 @@ export default function SignInForm() {
             </div>
             {/* Social sign up buttons */}
             <div className="flex justify-center items-center gap-x-5">
-              <button className="w-12 h-12 flex items-center justify-center transition hover:scale-120">
-                <FaGoogle size={28} className="text-[#5B4FC9]" />
+              <button
+                className="w-12 h-12 flex items-center justify-center transition hover:scale-120"
+                onClick={async () => {
+                  if (socialLoading) return;
+                  setSocialLoading('google');
+                  await signInWithGoogle();
+                  setSocialLoading(null);
+                }}
+                disabled={!!socialLoading}
+                aria-label="Sign in with Google"
+              >
+                {socialLoading === 'google' ? (
+                  <Icon set="fa" name="FaSpinner" className="animate-spin text-[#5B4FC9] size-7" />
+                ) : (
+                  <FaGoogle size={28} className="text-[#5B4FC9]" />
+                )}
               </button>
-              <button className="w-12 h-12 flex items-center justify-center transition hover:scale-120">
-                <FaXTwitter size={28} className="text-[#5B4FC9]" />
+              <button
+                className="w-12 h-12 flex items-center justify-center transition hover:scale-120"
+                onClick={async () => {
+                  if (socialLoading) return;
+                  setSocialLoading('x');
+                  await signInWithX();
+                  setSocialLoading(null);
+                }}
+                disabled={!!socialLoading}
+                aria-label="Sign in with X"
+              >
+                {socialLoading === 'x' ? (
+                  <Icon set="fa" name="FaSpinner" className="animate-spin text-[#5B4FC9] size-7" />
+                ) : (
+                  <FaXTwitter size={28} className="text-[#5B4FC9]" />
+                )}
               </button>
-              <button className="w-12 h-12 flex items-center justify-center transition hover:scale-120">
-                <FaMicrosoft size={28} className="text-[#5B4FC9]" />
+              <button
+                className="w-12 h-12 flex items-center justify-center transition hover:scale-120"
+                onClick={async () => {
+                  if (socialLoading) return;
+                  setSocialLoading('microsoft');
+                  await signInWithMicrosoft();
+                  setSocialLoading(null);
+                }}
+                disabled={!!socialLoading}
+                aria-label="Sign in with Microsoft"
+              >
+                {socialLoading === 'microsoft' ? (
+                  <Icon set="fa" name="FaSpinner" className="animate-spin text-[#5B4FC9] size-7" />
+                ) : (
+                  <FaMicrosoft size={28} className="text-[#5B4FC9]" />
+                )}
               </button>
             </div>
           </div>
