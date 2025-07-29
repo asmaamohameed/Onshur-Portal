@@ -186,24 +186,24 @@ export class KnowledgeBaseService {
     return filterCategories;
   }
 
-  // Future admin functions (to be implemented)
-  static async addQAItem(item: Omit<QAItem, 'id' | 'createdAt' | 'updatedAt'>): Promise<QAItem> {
-    // TODO: Implement Firebase/API call
-    throw new Error('Not implemented yet');
-  }
+  // // Future admin functions (to be implemented)
+  // static async addQAItem(_: Omit<QAItem, 'id' | 'createdAt' | 'updatedAt'>): Promise<QAItem> {
+  //   // TODO: Implement Firebase/API call
+  //   throw new Error('Not implemented yet');
+  // }
 
-  static async updateQAItem(id: string, updates: Partial<QAItem>): Promise<QAItem> {
-    // TODO: Implement Firebase/API call
-    throw new Error('Not implemented yet');
-  }
+  // static async updateQAItem(id: string, updates: Partial<QAItem>): Promise<QAItem> {
+  //   // TODO: Implement Firebase/API call
+  //   throw new Error('Not implemented yet');
+  // }
 
-  static async deleteQAItem(id: string): Promise<void> {
-    // TODO: Implement Firebase/API call
-    throw new Error('Not implemented yet');
-  }
+  // static async deleteQAItem(id: string): Promise<void> {
+  //   // TODO: Implement Firebase/API call
+  //   throw new Error('Not implemented yet');
+  // }
 
-  static async updateApplicationSteps(steps: ApplicationStep[]): Promise<ApplicationStep[]> {
-    // TODO: Implement Firebase/API call
-    throw new Error('Not implemented yet');
-  }
+  // static async updateApplicationSteps(steps: ApplicationStep[]): Promise<ApplicationStep[]> {
+  //   // TODO: Implement Firebase/API call
+  //   throw new Error('Not implemented yet');
+  // }
 }

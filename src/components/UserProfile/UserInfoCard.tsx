@@ -7,7 +7,6 @@ import Label from "../form/Label";
 import Select from "../form/Select";
 import { useAuth } from '../../context/AuthContext';
 import { nationalities, getNationalityName } from '../../utils/nationalities';
-import { Icon } from "../common/Icon";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
