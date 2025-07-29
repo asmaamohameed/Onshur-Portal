@@ -1,10 +1,27 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User } from 'firebase/auth';
+import { User as FirebaseUser } from 'firebase/auth';
 import { useNavigate, useLocation } from 'react-router';
 import { firebaseAuthService, signInWithGoogle, signInWithX, signInWithMicrosoft } from '../services/firebaseAuthService';
+import { getUserProfile, updateUserProfile } from '../services/userService';
 
+// 1. Define AppUser interface for your app's user profile
+export interface AppUser {
+  uid: string;
+  email: string;
+  photoURL?: string;
+  firstName?: string;
+  lastName?: string;
+  jobTitle?: string;
+  company?: string;
+  nationality?: string;
+  numberOfPublications?: string;
+  vatNumber?: string;
+  trnNumber?: string;
+}
+
+// 2. Update AuthContextType
 interface AuthContextType {
-  user: User | null;
+  user: AppUser | null;
   loading: boolean;
   error: string | null;
   signUp: (email: string, password: string) => Promise<void>;
@@ -14,6 +31,8 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signInWithX: () => Promise<void>;
   signInWithMicrosoft: () => Promise<void>;
+  updateProfile: (data: Partial<AppUser>) => Promise<void>;
+  refreshUserProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,15 +46,49 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 3. On auth state change, fetch profile data from Firestore and merge with auth user
   useEffect(() => {
-    const unsubscribe = firebaseAuthService.onAuthStateChanged((firebaseUser) => {
-      setUser(firebaseUser);
+    const unsubscribe = firebaseAuthService.onAuthStateChanged(async (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        const profileData = await getUserProfile(firebaseUser.uid);
+        
+        // Extract first and last name from displayName for social logins
+        let firstName = profileData?.firstName || '';
+        let lastName = profileData?.lastName || '';
+        
+        if (firebaseUser.displayName && !profileData?.firstName && !profileData?.lastName) {
+          const nameParts = firebaseUser.displayName.trim().split(' ');
+          firstName = nameParts[0] || '';
+          lastName = nameParts.slice(1).join(' ') || '';
+          
+          // Save the extracted names to Firestore if they don't exist yet
+          if (firstName || lastName) {
+            await updateUserProfile(firebaseUser.uid, { firstName, lastName });
+          }
+        }
+        
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email || '',
+          photoURL: profileData?.photoURL || firebaseUser.photoURL || '',
+          firstName: firstName,
+          lastName: lastName,
+          jobTitle: profileData?.jobTitle || '',
+          company: profileData?.company || '',
+          nationality: profileData?.nationality || '',
+          numberOfPublications: profileData?.numberOfPublications || '',
+          vatNumber: profileData?.vatNumber || '',
+          trnNumber: profileData?.trnNumber || '',
+        });
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
     return unsubscribe;
@@ -49,8 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (res.error) {
       setError(res.error);
     } else {
-      setUser(res.user);
-      // Redirect to home or intended page
+      // After sign up, user will be set by onAuthStateChanged
       navigate('/');
     }
   };
@@ -63,8 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (res.error) {
       setError(res.error);
     } else {
-      setUser(res.user);
-      // Redirect to intended page or home
+      // After sign in, user will be set by onAuthStateChanged
       const from = (location.state as any)?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
@@ -97,7 +148,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (res.error) {
       setError(res.error);
     } else {
-      setUser(res.user);
+      // After sign in, user will be set by onAuthStateChanged
       const from = (location.state as any)?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
@@ -111,7 +162,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (res.error) {
       setError(res.error);
     } else {
-      setUser(res.user);
+      // After sign in, user will be set by onAuthStateChanged
       const from = (location.state as any)?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
@@ -125,14 +176,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (res.error) {
       setError(res.error);
     } else {
-      setUser(res.user);
+      // After sign in, user will be set by onAuthStateChanged
       const from = (location.state as any)?.from?.pathname || '/';
       navigate(from, { replace: true });
     }
   };
 
+  // 4. Add updateProfile and refreshUserProfile
+  const refreshUserProfile = async () => {
+    if (user) {
+      const profileData = await getUserProfile(user.uid);
+      setUser({
+        ...user,
+        ...profileData,
+      });
+    }
+  };
+
+  const updateProfile = async (data: Partial<AppUser>) => {
+    if (user) {
+      await updateUserProfile(user.uid, data);
+      await refreshUserProfile();
+    }
+  };
+
+  // 5. Provide everything in the context
   return (
-    <AuthContext.Provider value={{ user, loading, error, signUp, signIn, signOut, resetPassword, signInWithGoogle: signInWithGoogleHandler, signInWithX: signInWithXHandler, signInWithMicrosoft: signInWithMicrosoftHandler }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      error,
+      signUp,
+      signIn,
+      signOut,
+      resetPassword,
+      signInWithGoogle: signInWithGoogleHandler,
+      signInWithX: signInWithXHandler,
+      signInWithMicrosoft: signInWithMicrosoftHandler,
+      updateProfile,
+      refreshUserProfile,
+    }}>
       {children}
     </AuthContext.Provider>
   );

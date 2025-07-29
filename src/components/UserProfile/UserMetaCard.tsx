@@ -1,42 +1,61 @@
+import { useState, useEffect } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useAuth } from '../../context/AuthContext';
+import { Icon } from "../common/Icon";
 
 export default function UserMetaCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const { user } = useAuth();
-  const displayName = user?.displayName || 'User';
-  const email = user?.email || 'No email';
-  const photoURL = user?.photoURL || '/images/user/owner.jpg';
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
+  const { user, updateProfile } = useAuth();
+
+  // Form state for editing
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    photoURL: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        photoURL: user.photoURL || "/images/user/owner.jpg",
+      });
+    }
+  }, [user, isOpen]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    await updateProfile(form);
     closeModal();
   };
+
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl lg:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
-            <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full">
-              <img src={photoURL} alt="user" className="w-full h-full object-cover" />
+            <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full flex items-center justify-center bg-gray-100">
+              {user?.photoURL ? (
+                <img src={user.photoURL} alt="user" className="w-full h-full object-cover" />
+              ) : (
+                <Icon set="fa" name="FaUserCircle" size={64} className="text-gray-300" />
+              )}
             </div>
             <div className="order-3 xl:order-2">
               <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 xl:text-left">
-                {displayName}
+                {user?.firstName || user?.lastName ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : 'User'}
               </h4>
               <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                <p className="text-sm text-gray-500">
-                  {/* You can add user role or other info here if available */}
-                  {email}
-                </p>
-                {/* <div className="hidden h-3.5 w-px bg-gray-300 xl:block"></div>
-                <p className="text-sm text-gray-500">
-                  Arizona, United States
-                </p> */}
+                <p className="text-sm text-gray-500">{user?.email || "No email"}</p>
               </div>
             </div>
           </div>
@@ -44,14 +63,7 @@ export default function UserMetaCard() {
             onClick={openModal}
             className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 lg:inline-flex lg:w-auto"
           >
-            <svg
-              className="fill-current"
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path
                 fillRule="evenodd"
                 clipRule="evenodd"
@@ -67,51 +79,43 @@ export default function UserMetaCard() {
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800">
-              Edit Personal Information
+              Edit Profile Information
             </h4>
             <p className="mb-6 text-sm text-gray-500 lg:mb-7">
               Update your details to keep your profile up-to-date.
             </p>
           </div>
-          <form className="flex flex-col">
-            <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+          <form className="flex flex-col" onSubmit={handleSave}>
+            <div className="custom-scrollbar h-[350px] overflow-y-auto px-2 pb-3">
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6">
-                  Personal Information
+                  Profile Information
                 </h5>
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
                     <Label>First Name</Label>
-                    <Input type="text" value="Musharof" />
+                    <Input type="text" name="firstName" value={form.firstName} onChange={handleChange} />
                   </div>
-
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Last Name</Label>
-                    <Input type="text" value="Chowdhury" />
+                    <Input type="text" name="lastName" value={form.lastName} onChange={handleChange} />
                   </div>
-
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email Address</Label>
-                    <Input type="text" value="randomuser@pimjo.com" />
+                    <Input type="text" value={user?.email || ""} disabled />
                   </div>
-
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Phone</Label>
-                    <Input type="text" value="+09 363 398 46" />
-                  </div>
-
-                  <div className="col-span-2">
-                    <Label>Bio</Label>
-                    <Input type="text" value="Team Manager" />
+                    <Label>Profile Image URL</Label>
+                    <Input type="text" name="photoURL" value={form.photoURL} onChange={handleChange} />
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-              <Button size="sm" variant="outline" onClick={closeModal}>
+              <Button size="sm" variant="outline" onClick={closeModal} type="button">
                 Close
               </Button>
-              <Button size="sm" onClick={handleSave}>
+              <Button size="sm" type="submit">
                 Save Changes
               </Button>
             </div>

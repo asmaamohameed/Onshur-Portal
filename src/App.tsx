@@ -13,6 +13,7 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import SupportProgram from "./pages/SupportProgram";
+import KnowledgeBase from "./pages/KnowledgeBase";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
               <Route index path="/" element={<Home />} />
               <Route path="/profile" element={<UserProfiles />} />
               <Route path="/SupportProgram" element={<SupportProgram />} />
+              <Route path="/KnowledgeBase" element={<KnowledgeBase />} />
             </Route>
 
             {/* Auth Layout */}

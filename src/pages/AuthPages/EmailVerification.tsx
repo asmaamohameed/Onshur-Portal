@@ -3,7 +3,6 @@ import AuthLayout from "./AuthPageLayout";
 import EmailVerificationForm from "../../components/auth/EmailVerificationForm";
 
 export default function EmailVerification() {
-  
   return (
     <>
       <PageMeta

@@ -1,21 +1,51 @@
+import { useState, useEffect } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import Select from "../form/Select";
 import { useAuth } from '../../context/AuthContext';
+import { nationalities, getNationalityName } from '../../utils/nationalities';
+import { Icon } from "../common/Icon";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const { user } = useAuth();
-  const displayName = user?.displayName || 'User';
-  const email = user?.email || 'No email';
-  const phone = user?.phoneNumber || 'No phone';
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
+  const { user, updateProfile } = useAuth();
+
+  // Form state for editing
+  const [form, setForm] = useState({
+    jobTitle: "",
+    company: "",
+    nationality: "",
+    numberOfPublications: "",
+    vatNumber: "",
+    trnNumber: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        jobTitle: user.jobTitle || "",
+        company: user.company || "",
+        nationality: user.nationality || "",
+        numberOfPublications: user.numberOfPublications || "",
+        vatNumber: user.vatNumber || "",
+        trnNumber: user.trnNumber || "",
+      });
+    }
+  }, [user, isOpen]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    await updateProfile(form);
     closeModal();
   };
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -23,49 +53,40 @@ export default function UserInfoCard() {
           <h4 className="text-lg font-semibold text-gray-800 lg:mb-6">
             Personal Information
           </h4>
-
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">
-                Name
-              </p>
+              <p className="mb-2 text-xs leading-normal text-gray-500">Job Title</p>
+              <p className="text-sm font-medium text-gray-800">{user?.jobTitle || "-"}</p>
+            </div>
+            <div>
+              <p className="mb-2 text-xs leading-normal text-gray-500">Company</p>
+              <p className="text-sm font-medium text-gray-800">{user?.company || "-"}</p>
+            </div>
+            <div>
+              <p className="mb-2 text-xs leading-normal text-gray-500">Nationality</p>
               <p className="text-sm font-medium text-gray-800">
-                {displayName}
+                {user?.nationality ? getNationalityName(user.nationality) : "-"}
               </p>
             </div>
-
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">
-                Email address
-              </p>
-              <p className="text-sm font-medium text-gray-800">
-                {email}
-              </p>
+              <p className="mb-2 text-xs leading-normal text-gray-500">Number of Publications</p>
+              <p className="text-sm font-medium text-gray-800">{user?.numberOfPublications || "-"}</p>
             </div>
-
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">
-                Phone
-              </p>
-              <p className="text-sm font-medium text-gray-800">
-                {phone}
-              </p>
+              <p className="mb-2 text-xs leading-normal text-gray-500">VAT Number</p>
+              <p className="text-sm font-medium text-gray-800">{user?.vatNumber || "-"}</p>
+            </div>
+            <div>
+              <p className="mb-2 text-xs leading-normal text-gray-500">TRN Number</p>
+              <p className="text-sm font-medium text-gray-800">{user?.trnNumber || "-"}</p>
             </div>
           </div>
         </div>
-
         <button
           onClick={openModal}
           className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 lg:inline-flex lg:w-auto"
         >
-          <svg
-            className="fill-current"
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none">
             <path
               fillRule="evenodd"
               clipRule="evenodd"
@@ -87,46 +108,54 @@ export default function UserInfoCard() {
               Update your details to keep your profile up-to-date.
             </p>
           </div>
-          <form className="flex flex-col">
+          <form className="flex flex-col" onSubmit={handleSave}>
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 lg:mb-6">
                   Personal Information
                 </h5>
-
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>First Name</Label>
-                    <Input type="text" value="Musharof" />
+                    <Label>Job Title</Label>
+                    <Input type="text" name="jobTitle" value={form.jobTitle} onChange={handleChange} />
                   </div>
-
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Last Name</Label>
-                    <Input type="text" value="Chowdhury" />
+                    <Label>Company</Label>
+                    <Input type="text" name="company" value={form.company} onChange={handleChange} />
                   </div>
-
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Email Address</Label>
-                    <Input type="text" value="randomuser@pimjo.com" />
+                    <Label>Nationality</Label>
+                    <Select
+                      options={nationalities.map(nationality => ({
+                        value: nationality.code,
+                        label: nationality.name,
+                      }))}
+                      defaultValue={form.nationality}
+                      onChange={(value) => setForm({ ...form, nationality: value })}
+                      placeholder="Select your nationality"
+                      className="w-full"
+                    />
                   </div>
-
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Phone</Label>
-                    <Input type="text" value="+09 363 398 46" />
+                    <Label>Number of Publications</Label>
+                    <Input type="number" name="numberOfPublications" value={form.numberOfPublications} onChange={handleChange} />
                   </div>
-
-                  <div className="col-span-2">
-                    <Label>Bio</Label>
-                    <Input type="text" value="Team Manager" />
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>VAT Number</Label>
+                    <Input type="text" name="vatNumber" value={form.vatNumber} onChange={handleChange} />
+                  </div>
+                  <div className="col-span-2 lg:col-span-1">
+                    <Label>TRN Number</Label>
+                    <Input type="text" name="trnNumber" value={form.trnNumber} onChange={handleChange} />
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-              <Button size="sm" variant="outline" onClick={closeModal}>
+              <Button size="sm" variant="outline" onClick={closeModal} type="button">
                 Close
               </Button>
-              <Button size="sm" onClick={handleSave}>
+              <Button size="sm" type="submit">
                 Save Changes
               </Button>
             </div>
