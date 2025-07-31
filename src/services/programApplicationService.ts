@@ -12,6 +12,12 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
+export interface UploadedFile {
+  name: string;
+  url: string;
+  size: number;
+}
+
 export interface ProgramApplication {
   id?: string;
   userId: string;
@@ -44,21 +50,9 @@ export interface ProgramApplication {
   receiveMarketingEmails?: boolean;
   
   // Step 5: Documents
-  pitchDeck?: Array<{
-    name: string;
-    url: string;
-    size: number;
-  }>;
-  businessLicense?: Array<{
-    name: string;
-    url: string;
-    size: number;
-  }>;
-  financialSummary?: Array<{
-    name: string;
-    url: string;
-    size: number;
-  }>;
+  pitchDeck?: UploadedFile[];
+  businessLicense?: UploadedFile[];
+  financialSummary?: UploadedFile[];
 }
 
 export class ProgramApplicationService {
