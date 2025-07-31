@@ -76,6 +76,14 @@ const resources = {
       passwordMismatch: 'Passwords do not match',
       invalidCode: 'Invalid verification code',
       passwordInfo: 'Password must be at least 8 characters with uppercase, lowercase, numbers, and special characters.',
+      passwordRequirements: 'Password must include: 8+ characters, uppercase, lowercase, number, special character',
+      passwordLength: 'At least 8 characters',
+      passwordUppercase: 'uppercase letter',
+      passwordLowercase: 'lowercase letter',
+      passwordNumber: 'number',
+      passwordSpecial: 'special character',
+      passwordsMatch: 'Passwords match',
+      passwordsDoNotMatch: 'Passwords do not match',
       
       // Status Messages
       error: 'Error',
@@ -176,6 +184,14 @@ const resources = {
       passwordMismatch: 'كلمات المرور غير متطابقة',
       invalidCode: 'رمز التحقق غير صالح',
       passwordInfo: 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل مع أحرف كبيرة وصغيرة وأرقام ورموز خاصة.',
+      passwordRequirements: 'يجب أن تتضمن كلمة المرور: 8+ أحرف، حرف كبير، حرف صغير، رقم، حرف خاص.',
+      passwordLength: 'أقل من 8 أحرف',
+      passwordUppercase: 'حرف كبير',
+      passwordLowercase: 'حرف صغير',
+      passwordNumber: 'رقم',
+      passwordSpecial: 'رمز خاص',
+      passwordsMatch: 'كلمات المرور متطابقة',
+      passwordsDoNotMatch: 'كلمات المرور غير متطابقة',
       
       // Status Messages
       error: 'خطأ',

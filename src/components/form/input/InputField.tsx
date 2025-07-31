@@ -17,6 +17,8 @@ interface InputProps {
   error?: boolean;
   hint?: string;
   dir?: "ltr" | "rtl";
+  autoComplete?: string;
+  "data-form-type"?: string;
 }
 
 // Refactor to forward ref
@@ -38,6 +40,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       error = false,
       hint,
       dir,
+      autoComplete,
+      "data-form-type": dataFormType,
     },
     ref: ForwardedRef<HTMLInputElement>
   ) => {
@@ -69,6 +73,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className={inputClasses}
           ref={ref}
           dir={dir}
+          autoComplete={autoComplete}
+          data-form-type={dataFormType}
         />
 
         {hint && (

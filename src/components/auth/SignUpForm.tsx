@@ -62,6 +62,11 @@ export default function SignUpForm() {
     return Object.values(passwordValidation).every(validation => validation);
   };
 
+  // Check if passwords match
+  const doPasswordsMatch = (): boolean => {
+    return password === confirmPassword && confirmPassword.length > 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLocalError(null);
@@ -114,6 +119,7 @@ export default function SignUpForm() {
                     dir={isRTL ? 'rtl' : 'ltr'}
                     value={email}
                     onChange={e => setEmail(e.target.value)}
+                    autoComplete="email"
                   />
                 </div>
                 {/* <!-- Password --> */}
@@ -129,6 +135,8 @@ export default function SignUpForm() {
                       dir={isRTL ? 'rtl' : 'ltr'}
                       value={password}
                       onChange={handlePasswordChange}
+                      autoComplete="new-password"
+                      data-form-type="other"
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -142,12 +150,31 @@ export default function SignUpForm() {
                     </span>
                   </div>
                   
-                  {/* Password requirements info */}
-                  <div className="mt-2">
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      {t('passwordInfo') || 'Password must be at least 8 characters with uppercase, lowercase, numbers, and special characters.'}
-                    </p>
-                  </div>
+                  {/* Password requirements with immediate feedback */}
+                  {password.length > 0 && !isPasswordStrong() && (
+                    <div className="mt-2">
+                      <div className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+                        <Icon set="fa" name="FaExclamationTriangle" className="size-3" />
+                        <span>
+                          {!passwordValidation.length && `${t('passwordLength') || 'At least 8 characters'}, `}
+                          {!passwordValidation.uppercase && `${t('passwordUppercase') || 'uppercase letter'}, `}
+                          {!passwordValidation.lowercase && `${t('passwordLowercase') || 'lowercase letter'}, `}
+                          {!passwordValidation.number && `${t('passwordNumber') || 'number'}, `}
+                          {!passwordValidation.special && `${t('passwordSpecial') || 'special character'}`}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {password.length === 0 && (
+                    <div className="mt-2">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                        <Icon set="fa" name="FaInfoCircle" className="size-3" />
+                        <span>
+                          {t('passwordRequirements') || 'Password must include: 8+ characters, uppercase, lowercase, number, special character'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {/* <!-- confirm password--> */}
                 <div>
@@ -162,6 +189,7 @@ export default function SignUpForm() {
                       dir={isRTL ? 'rtl' : 'ltr'}
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
+                      autoComplete="new-password"
                     />
                     <span
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -175,7 +203,19 @@ export default function SignUpForm() {
                     </span>
                   </div>
                   
-
+                  {/* Password match feedback */}
+                  {confirmPassword.length > 0 && (
+                    <div className="mt-2">
+                      <div className={`text-xs flex items-center gap-2 ${doPasswordsMatch() ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        <Icon 
+                          set="fa" 
+                          name={doPasswordsMatch() ? 'FaCheck' : 'FaTimes'} 
+                          className="size-3" 
+                        />
+                        {doPasswordsMatch() ? (t('passwordsMatch') || 'Passwords match') : (t('passwordsDoNotMatch') || 'Passwords do not match')}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {/* <!-- Button --> */}
                 <div>
@@ -183,7 +223,7 @@ export default function SignUpForm() {
                     className="w-full" 
                     size="sm" 
                     type="submit" 
-                    disabled={loading || !isPasswordStrong()}
+                    disabled={loading}
                   >
                     {loading ? t('loading') : t('registerButton')}
                   </Button>

@@ -1,48 +1,18 @@
 import PageMeta from "../components/common/PageMeta";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import { Icon } from "../components/common/Icon";
-
-// Placeholder data, to be replaced with Firebase integration in the future
-const supportPrograms = [
-  {
-    title: "Launch Program",
-    status: "closed",
-    statusLabel: "Closed",
-    statusIcon: { set: "fa" as const, name: "FaTimesCircle", color: "#e53e3e" },
-    statusBg: "bg-gray-100",
-    statusText: "text-red-600",
-    description: "For Aspiring Publishers In The UAE",
-    details:
-      "Gain the tools, guidance, and support to launch your publishing journey — from building your first catalog to mastering the basics.",
-    buttonDisabled: true,
-  },
-  {
-    title: "Scale Program",
-    status: "open",
-    statusLabel: "Open",
-    statusIcon: { set: "fa" as const, name: "FaCheckCircle", color: "#38a169" },
-    statusBg: "bg-green-50",
-    statusText: "text-green-700",
-    description: "For Established Publishers Looking To Grow",
-    details:
-      "Access industry tools, mentorship, and proven strategies to expand your publishing house into new markets.",
-    buttonDisabled: false,
-  },
-  {
-    title: "Disrupt Program",
-    status: "open",
-    statusLabel: "Open",
-    statusIcon: { set: "fa" as const, name: "FaCheckCircle", color: "#38a169" },
-    statusBg: "bg-green-50",
-    statusText: "text-green-700",
-    description: "For Publishers Driving Innovation",
-    details:
-      "Support for tech-integrated publishing, creative business models, and bold ideas that transform the industry.",
-    buttonDisabled: false,
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { getAllPrograms } from "../data/programs";
 
 export default function SupportProgram() {
+  const navigate = useNavigate();
+
+  const handleApplyNow = (programType: string) => {
+    navigate(`/apply/${programType}`);
+  };
+
+  const supportPrograms = getAllPrograms();
+
   return (
     <>
       <PageMeta
@@ -80,6 +50,7 @@ export default function SupportProgram() {
               <button
                 className={`mt-6 w-full py-2 rounded bg-brand-500 text-white font-semibold transition-opacity duration-200 focus:outline-none focus:ring-2  focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed`}
                 disabled={program.buttonDisabled}
+                onClick={() => handleApplyNow(program.programType)}
               >
                 Apply Now
               </button>

@@ -49,41 +49,41 @@ export default function UserInfoCard() {
     <div className="p-5 border border-gray-200 rounded-2xl lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h4 className="text-lg font-semibold text-gray-800 lg:mb-6">
+          <h4 className="text-lg font-semibold text-brand-500 lg:mb-6">
             Personal Information
           </h4>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">Job Title</p>
+              <p className="mb-2 text-xs leading-normal text-brand-500">Job Title</p>
               <p className="text-sm font-medium text-gray-800">{user?.jobTitle || "-"}</p>
             </div>
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">Company</p>
+              <p className="mb-2 text-xs leading-normal text-brand-500">Company</p>
               <p className="text-sm font-medium text-gray-800">{user?.company || "-"}</p>
             </div>
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">Nationality</p>
+              <p className="mb-2 text-xs leading-normal text-brand-500">Nationality</p>
               <p className="text-sm font-medium text-gray-800">
                 {user?.nationality ? getNationalityName(user.nationality) : "-"}
               </p>
             </div>
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">Number of Publications</p>
+              <p className="mb-2 text-xs leading-normal text-brand-500">Number of Publications</p>
               <p className="text-sm font-medium text-gray-800">{user?.numberOfPublications || "-"}</p>
             </div>
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">VAT Number</p>
+              <p className="mb-2 text-xs leading-normal text-brand-500">VAT Number</p>
               <p className="text-sm font-medium text-gray-800">{user?.vatNumber || "-"}</p>
             </div>
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500">TRN Number</p>
+              <p className="mb-2 text-xs leading-normal text-brand-500">TRN Number</p>
               <p className="text-sm font-medium text-gray-800">{user?.trnNumber || "-"}</p>
             </div>
           </div>
         </div>
         <button
           onClick={openModal}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 lg:inline-flex lg:w-auto"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-brand-500 bg-white px-4 py-3 text-sm font-medium text-brand-500 shadow-theme-xs hover:bg-brand-800 hover:text-brand-900 lg:inline-flex lg:w-auto"
         >
           <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none">
             <path
@@ -100,12 +100,9 @@ export default function UserInfoCard() {
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11">
           <div className="px-2 pr-14">
-            <h4 className="mb-2 text-2xl font-semibold text-gray-800">
+            <h4 className="mb-2 text-2xl font-semibold text-brand-500">
               Edit Personal Information
             </h4>
-            <p className="mb-6 text-sm text-gray-500 lg:mb-7">
-              Update your details to keep your profile up-to-date.
-            </p>
           </div>
           <form className="flex flex-col" onSubmit={handleSave}>
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
@@ -115,15 +112,15 @@ export default function UserInfoCard() {
                 </h5>
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Job Title</Label>
+                    <Label className="text-brand-500">Job Title</Label>
                     <Input type="text" name="jobTitle" value={form.jobTitle} onChange={handleChange} />
                   </div>
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Company</Label>
+                    <Label className="text-brand-500">Company</Label>
                     <Input type="text" name="company" value={form.company} onChange={handleChange} />
                   </div>
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Nationality</Label>
+                    <Label className="text-brand-500">Nationality</Label>
                     <Select
                       options={nationalities.map(nationality => ({
                         value: nationality.code,
@@ -136,15 +133,15 @@ export default function UserInfoCard() {
                     />
                   </div>
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Number of Publications</Label>
+                    <Label className="text-brand-500">Number of Publications</Label>
                     <Input type="number" name="numberOfPublications" value={form.numberOfPublications} onChange={handleChange} />
                   </div>
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>VAT Number</Label>
+                    <Label className="text-brand-500">VAT Number</Label>
                     <Input type="text" name="vatNumber" value={form.vatNumber} onChange={handleChange} />
                   </div>
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>TRN Number</Label>
+                    <Label className="text-brand-500">TRN Number</Label>
                     <Input type="text" name="trnNumber" value={form.trnNumber} onChange={handleChange} />
                   </div>
                 </div>

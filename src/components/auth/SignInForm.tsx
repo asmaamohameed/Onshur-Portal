@@ -65,7 +65,7 @@ export default function SignInForm() {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder={t('enterPassword')}
-                      className='text-left pr-12'
+                      className='text-left'
                       dir={isRTL ? 'rtl' : 'ltr'}
                       value={password}
                       onChange={e => setPassword(e.target.value)}

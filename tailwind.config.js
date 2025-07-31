@@ -8,6 +8,9 @@ export default {
     extend: {
       colors: {
         primary: "#5951A2",
+        brand: {
+          500: "#5951A2",
+        },
       },
     },
   },

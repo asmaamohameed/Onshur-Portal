@@ -68,7 +68,13 @@ const AppSidebar: React.FC = () => {
 
   // const isActive = (path: string) => location.pathname === path;
   const isActive = useCallback(
-    (path: string) => location.pathname === path,
+    (path: string) => {
+      // Special case for Support Program - consider application pages as active too
+      if (path === "/SupportProgram") {
+        return location.pathname === path || location.pathname.startsWith("/apply/");
+      }
+      return location.pathname === path;
+    },
     [location.pathname]
   );
 

@@ -61,7 +61,7 @@ export default function UserMetaCard() {
           </div>
           <button
             onClick={openModal}
-            className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 lg:inline-flex lg:w-auto"
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-brand-500 bg-white px-4 py-3 text-sm font-medium text-brand-500 shadow-theme-xs hover:bg-brand-800 hover:text-brand-900 lg:inline-flex lg:w-auto"
           >
             <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path
@@ -78,12 +78,9 @@ export default function UserMetaCard() {
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 lg:p-11">
           <div className="px-2 pr-14">
-            <h4 className="mb-2 text-2xl font-semibold text-gray-800">
+            <h4 className="mb-2 text-2xl font-semibold text-brand-500">
               Edit Profile Information
             </h4>
-            <p className="mb-6 text-sm text-gray-500 lg:mb-7">
-              Update your details to keep your profile up-to-date.
-            </p>
           </div>
           <form className="flex flex-col" onSubmit={handleSave}>
             <div className="custom-scrollbar h-[350px] overflow-y-auto px-2 pb-3">
@@ -93,19 +90,19 @@ export default function UserMetaCard() {
                 </h5>
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>First Name</Label>
+                    <Label className="text-brand-500">First Name</Label>
                     <Input type="text" name="firstName" value={form.firstName} onChange={handleChange} />
                   </div>
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Last Name</Label>
+                    <Label className="text-brand-500">Last Name</Label>
                     <Input type="text" name="lastName" value={form.lastName} onChange={handleChange} />
                   </div>
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Email Address</Label>
+                    <Label className="text-brand-500">Email Address</Label>
                     <Input type="text" value={user?.email || ""} disabled />
                   </div>
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Profile Image URL</Label>
+                    <Label className="text-brand-500">Profile Image URL</Label>
                     <Input type="text" name="photoURL" value={form.photoURL} onChange={handleChange} />
                   </div>
                 </div>

@@ -27,6 +27,7 @@ export default function App() {
               <Route index path="/" element={<Home />} />
               <Route path="/profile" element={<UserProfiles />} />
               <Route path="/SupportProgram" element={<SupportProgram />} />
+              {/* <Route path="/apply/:programType" element={<ProgramApplication />} /> */}
               <Route path="/KnowledgeBase" element={<KnowledgeBase />} />
             </Route>
 
